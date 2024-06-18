@@ -1,0 +1,26 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_USER: admin
+      POSTGRES_DB: dbtest
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  spring_app:
+    container_name: my-spring-container
+    image: crudtest-spring-app
+    build: ./
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dbtest?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:
